@@ -1,5 +1,6 @@
 package com.example.traderbookv2.web;
 
+import com.example.traderbookv2.exception.ApiRequestException;
 import com.example.traderbookv2.model.StatusEntity;
 import com.example.traderbookv2.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,20 @@ public class StatusController {
     public StatusService statusService;
 
     @PostMapping("")
-    public StatusEntity submitStatus(@RequestBody StatusEntity status) {
-        return statusService.submitStatusDataIntoDB(status);
+    public StatusEntity submitStatus(@RequestBody (required = false) StatusEntity status) {
+        try {
+            return statusService.submitStatusDataIntoDB(status);
+        } catch (Exception e) {
+            throw new ApiRequestException("Could not submit status data");
+        }
     }
 
     @GetMapping("")
     private ArrayList<StatusEntity> getAllStatus() {
-        return statusService.retrieveStatus();
+        try {
+            return statusService.retrieveStatus();
+        } catch (Exception e) {
+            throw new ApiRequestException("Could not get the statuses");
+        }
     }
 }
